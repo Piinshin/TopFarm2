@@ -4,7 +4,7 @@ from topfarm.cost_models.utils.spanning_tree import mst
 from topfarm.cost_models.cost_model_wrappers import CostModelComponent
 from topfarm.plotting import XYPlotComp, NoPlot
 from IPython.display import display
-
+import os
 import numpy as np
 import matplotlib.pylab as plt
 
@@ -77,13 +77,15 @@ class XYElPlotComp(XYPlotComp):
 
 
 class XYCablePlotComp(XYPlotComp):
-    def __init__(self, memory=10, delay=0.001, plot_initial=True, plot_improvements_only=False, ax=None, legendloc=1):
+    def __init__(self, memory=10, delay=0.001, plot_initial=True, plot_improvements_only=False, ax=None, legendloc=1,save_plot_per_iteration=False):
         if ax is None:
             self.fig, ax = plt.subplots(1, 1)
         else:
             self.fig = plt.gcf()
         self.hdisplay = display("", display_id=True)
         XYPlotComp.__init__(self, ax=ax)
+        self.save_plot_per_iteration=save_plot_per_iteration
+        self.counter=0
 
     def plot_current_position(self, x, y):
         elnet_layout = mst(x, y)
@@ -94,3 +96,10 @@ class XYCablePlotComp(XYPlotComp):
     def compute(self, inputs, outputs):
         XYPlotComp.compute(self, inputs, outputs)
         self.hdisplay.update(self.fig)
+
+        self.counter+=1 #Count for the iteration increment
+
+        if self.save_plot_per_iteration:
+            if not os.path.exists('Figures'):
+                os.mkdir('Figures')
+            plt.savefig(f'Figures/iteration_{self.counter}.png')
