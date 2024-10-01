@@ -7,13 +7,14 @@ Setup file for Topfarm2
 import os
 from setuptools import setup, find_packages
 
+from docs.conf import version
+
 repo = os.path.dirname(__file__)
 try:
     from git_utils import write_vers
-    version = write_vers(vers_file='topfarm/__init__.py', repo=repo, skip_chars=1)
+    version = write_vers(vers_file='TopFarm2/topfarm/__init__.py', repo=repo, skip_chars=1)
 except Exception:
     version = '999'
-
 
 
 def read(fname):
